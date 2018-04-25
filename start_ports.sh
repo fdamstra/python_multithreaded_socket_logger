@@ -8,7 +8,7 @@ INTERFACE=eth1
 # Get the IP of eth1
 IP=$(ifconfig ${INTERFACE} | grep "inet addr" | cut -d: -f2 | awk '{ print $1 }')
 
-mkdir -p logs/tcp
+mkdir -p /opt/multithreaded_socket_logger/logs/tcp
 for i in `seq ${START_PORT} ${END_PORT}`
 do
 	echo Starting server on port $i
