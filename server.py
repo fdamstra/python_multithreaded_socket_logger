@@ -152,6 +152,12 @@ def main(args):
                 filename=args.logfile,
                 filemode='w')
 
+    if args.protocol == 'tcp':
+        server = ThreadedTCPServer((args.ip, args.port), Handler)
+    else:
+        print "WARNING: UDP Support is untested!"
+        server = ThreadedUDPServer((args.ip, args.port), Handler)
+
     if args.daemonize:
         if args.debug:
             print "DEBUG: Daemonizing server."
@@ -161,11 +167,6 @@ def main(args):
 
     logging.warn("action='started listening' debug:{} port:{} ip:{} protocol:{} daemonize:{}".format(args.debug, args.port, args.ip, args.protocol, args.daemonize))
 
-    if args.protocol == 'tcp':
-        server = ThreadedTCPServer((args.ip, args.port), Handler)
-    else:
-        print "WARNING: UDP Support is untested!"
-        server = ThreadedUDPServer((args.ip, args.port), Handler)
 
     try:
         server.serve_forever()
