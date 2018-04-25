@@ -51,8 +51,8 @@ def daemonize():
     if os.fork() != 0:
         os._exit(0)
 
-    os.chdir("/")
-    os.umask(022)
+#    os.chdir("/")
+#    os.umask(022)
     [os.close(i) for i in xrange(3)]
     os.open(os.devnull, os.O_RDWR)
     os.dup2(0, 1)
