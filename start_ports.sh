@@ -2,7 +2,7 @@
 
 # Modify these as you see fit
 START_PORT=6000
-END_PORT=6025
+END_PORT=6100
 INTERFACE=eth1
 
 # Get the IP of eth1
