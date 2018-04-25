@@ -8,5 +8,5 @@ mkdir -p logs/tcp
 for i in `seq ${START_PORT} ${END_PORT}`
 do
 	echo Starting server on port $i
-	python server.py --port $i --logfile logs/tcp/$i.log --daemonize
+	sudo python server.py --port $i --logfile logs/tcp/$i.log --daemonize --runas nobody
 done

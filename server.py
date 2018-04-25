@@ -41,8 +41,22 @@ import argparse
 import logging
 import threading
 import time
+import pwd
 
-def daemonize():
+def switch_to_user(user):
+    if user:
+        try:
+            uid = pwd.getpwnam(user).pw_uid
+        except KeyError:
+            logging.error("User {} not found.".format(user))
+            sys.exit(2)
+        try:
+            os.setuid(uid)
+        except OSError:
+            logging.error("Could not change to uid for user {}.".format(user))
+            sys.exit(2)
+
+def daemonize(user):
     if os.fork() != 0:
         os._exit(0)
 
@@ -53,6 +67,9 @@ def daemonize():
 
 #    os.chdir("/")
 #    os.umask(022)
+
+    switch_to_user(user)
+ 
     [os.close(i) for i in xrange(3)]
     os.open(os.devnull, os.O_RDWR)
     os.dup2(0, 1)
@@ -106,6 +123,7 @@ def main(args):
     parser.add_argument('--ip', default='0.0.0.0', help="Specify IP to listen on. Default is 0.0.0.0.")
     parser.add_argument('--protocol', default='tcp', choices=['tcp', 'udp'], help="Specify protocol type. UDP support experimental!")
     parser.add_argument('--logfile',    default='stdout', help="Path to logfile.")
+    parser.add_argument('--runas', metavar="USERNAME", help="Run as this user.")
     args = parser.parse_args()
     if args.debug:
         print "DEBUG: Port: {}".format(args.port)
@@ -122,11 +140,6 @@ def main(args):
         print "ERROR: Cannot daemonize and log to stdout."
         sys.exit(1) 
 
-    if args.daemonize:
-        if args.debug:
-            print "DEBUG: Daemonizing server."
-        daemonize()
-
     # Set logging
     if(args.logfile == 'stdout'):
         logging.basicConfig(level=logging.DEBUG, 
@@ -138,6 +151,13 @@ def main(args):
                 datefmt='%Y-%m-%d %H:%M:%S.%f %z',
                 filename=args.logfile,
                 filemode='w')
+
+    if args.daemonize:
+        if args.debug:
+            print "DEBUG: Daemonizing server."
+        daemonize(args.runas)
+    else:
+        switch_to_user(args.runas)
 
     logging.warn("action='started listening' debug:{} port:{} ip:{} protocol:{} daemonize:{}".format(args.debug, args.port, args.ip, args.protocol, args.daemonize))
 

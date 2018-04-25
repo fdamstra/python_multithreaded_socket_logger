@@ -3,4 +3,7 @@
 logs/
 
 # Ignore compiled python
-.pyc
+*.pyc
+
+# Ignore vim swapfiles
+*.swp
