@@ -3,6 +3,7 @@
 # Make eth1 startup at boot
 echo "auto eth1" > /etc/network/interfaces.d/99-eth1.cfg
 echo "iface eth1 inet dhcp" >> /etc/network/interfaces.d/99-eth1.cfg
+echo "metric 150" >> /etc/network/interfaces.d/99-eth1.cfg
 
 # Create rc.local to start the listener
 cp /opt/multithreaded_socket_logger/start_ports.sh /etc/rc.local
