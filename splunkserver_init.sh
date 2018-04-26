@@ -8,6 +8,11 @@ sudo -u splunk /opt/splunk/bin/splunk start --accept-license --seed-passwd "NotT
 /opt/splunk/bin/splunk enable deploy-server -auth admin:NotTheDefault
 /opt/splunk/bin/splunk enable web-ssl -auth admin:NotTheDefault
 /opt/splunk/bin/splunk stop
+
+# Install honeypot app
+cp -r /opt/~/python_multithreaded_socket_logger/honeypot_inputs /opt/splunk/etc/deployment-apps/
+
+# Fix any perms
 chown -R splunk:splunk /opt/splunk
 
 # Redirect 443 to spunk
@@ -16,5 +21,4 @@ service netfilter-persistent start
 invoke-rc.d netfilter-persistent save
 netfilter-persistent save
 
-
-
+# System will reboot
