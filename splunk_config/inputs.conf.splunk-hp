@@ -1,0 +1,5 @@
+[default]
+host = splunk-hp
+
+[splunktcp://9997]
+
