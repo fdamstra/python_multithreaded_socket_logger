@@ -25,7 +25,7 @@ service sshd restart
 wget -O /usr/local/src/splunkforwarder-7.1.0.deb 'https://www.splunk.com/bin/splunk/DownloadActivityServlet?architecture=x86_64&platform=linux&version=7.1.0&product=universalforwarder&filename=splunkforwarder-7.1.0-2e75b3406c5b-linux-2.6-amd64.deb&wget=true'
 apt-get install -y /usr/local/src/splunkforwarder-7.1.0.deb
 /opt/splunkforwarder/bin/splunk enable boot-start -user splunk --accept-license --seed-passwd "NotTheDefault"
-/opt/splunkforwarder/bin/splunk set deploy-server 10.66.1.10:8089 -auth admin:NotTheDefault
+/opt/splunkforwarder/bin/splunk set deploy-poll 10.66.1.10:8089 -auth admin:NotTheDefault
 echo "SPLUNK_BINDIP=127.0.0.1" >> /opt/splunkforwarder/etc/splunk-launch.conf
 chown -R splunk:splunk /opt/splunkforwarder
 
