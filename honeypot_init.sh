@@ -11,5 +11,5 @@ chmod 700 /etc/rc.local
 
 # Only listen on eth0
 ifconfig eth0 | grep "inet addr" | cut -d: -f2 | awk '{ print "ListenAddress", $1 }' >> /etc/ssh/sshd_config
-service sshd restart
+#service sshd restart
 
