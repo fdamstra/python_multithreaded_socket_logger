@@ -10,7 +10,8 @@ sudo -u splunk /opt/splunk/bin/splunk start --accept-license --seed-passwd "NotT
 /opt/splunk/bin/splunk stop
 
 # Install honeypot app
-cp -r /opt/~/python_multithreaded_socket_logger/honeypot_inputs /opt/splunk/etc/deployment-apps/
+cp -r /opt/multithreaded_socket_logger/honeypot_inputs/ /opt/splunk/etc/deployment-apps/
+cp /opt/multithreaded_socket_logger/serverclass.conf /opt/splunk/etc/system/local/
 
 # Fix any perms
 chown -R splunk:splunk /opt/splunk
