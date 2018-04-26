@@ -83,7 +83,7 @@ class Handler(SocketServer.StreamRequestHandler):
 
     def handle(self):
         start_time = time.time()
-        logging.info("action='connection opened' src_ip:{} src_port:{} dest_ip:{} dest_port:{}".format(
+        logging.info("action=connection_opened src_ip={} src_port={} dest_ip={} dest_port={}".format(
                     self.client_address[0],
                     self.client_address[1],
                     self.server.server_address[0],
@@ -94,7 +94,7 @@ class Handler(SocketServer.StreamRequestHandler):
 
             if not command:    # EOF
                 end_time = time.time()
-                logging.info("action='connection closed' src_ip:{} src_port:{} dest_ip:{} dest_port:{} duration:{}".format(
+                logging.info("action=connection_closed src_ip={} src_port={} dest_ip={} dest_port={} duration={}".format(
                     self.client_address[0],
                     self.client_address[1],
                     self.server.server_address[0],
@@ -103,11 +103,11 @@ class Handler(SocketServer.StreamRequestHandler):
                 break
 #            self.wfile.write("your command was: %s" % (command,))
             # Sanitize and log
-            command = command.replace("'", "\\'")
+            command = command.replace("\"", "\\'")
             command = command.replace("\b", "\\b")
             command = command.replace("\n", "\\n")
             command = command.replace("\r", "\\r")
-            logging.info("action='data in' src_ip:{} src_port:{} dest_ip:{} dest_port:{} msg='{}'".format(
+            logging.info('action=data_in src_ip={} src_port={} dest_ip={} dest_port={} msg="{}"'.format(
                     self.client_address[0],
                     self.client_address[1],
                     self.server.server_address[0],
@@ -165,13 +165,13 @@ def main(args):
     else:
         switch_to_user(args.runas)
 
-    logging.warn("action='started listening' debug:{} port:{} ip:{} protocol:{} daemonize:{}".format(args.debug, args.port, args.ip, args.protocol, args.daemonize))
+    logging.warn("action=started_listening debug={} port={} ip={} protocol={} daemonize={}".format(args.debug, args.port, args.ip, args.protocol, args.daemonize))
 
 
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        logging.warn("action='Stopping: KeyboardInterrupt' debug:{} port:{} ip:{} protocol:{} daemonize:{}".format(args.debug, args.port, args.ip, args.protocol, args.daemonize))
+        logging.warn("action=stopping=KeyboardInterrupt debug={} port={} ip={} protocol={} daemonize={}".format(args.debug, args.port, args.ip, args.protocol, args.daemonize))
         pass
 
 if __name__ == "__main__":
