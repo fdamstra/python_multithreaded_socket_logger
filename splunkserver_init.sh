@@ -13,7 +13,7 @@ sudo -u splunk /opt/splunk/bin/splunk start --accept-license --seed-passwd "NotT
 cp -r /opt/multithreaded_socket_logger/splunk_config/apps/honeypot_inputs/ /opt/splunk/etc/deployment-apps/
 cp -r /opt/multithreaded_socket_logger/splunk_config/apps/honeypot_outputs/ /opt/splunk/etc/deployment-apps/
 cp /opt/multithreaded_socket_logger/splunk_config/serverclass.conf /opt/splunk/etc/system/local/
-cp /opt/multithreaded_socket_logger/splunk_config/inputs.conf.honeypot /opt/splunkforwarder/etc/system/local/
+cp /opt/multithreaded_socket_logger/splunk_config/inputs.conf.splunk-hp /opt/splunk/etc/system/local/inputs.conf
 
 # Fix any perms
 chown -R splunk:splunk /opt/splunk
