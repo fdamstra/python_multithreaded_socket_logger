@@ -1,4 +1,4 @@
-#! /bin/bash
+#!/bin/sh -e
 
 # Modify these as you see fit
 START_PORT=1
