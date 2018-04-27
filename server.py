@@ -85,6 +85,7 @@ class Handler(SocketServer.StreamRequestHandler):
 
     def handle(self):
         start_time = time.time()
+        bytecount = 0
         logging.info("action=connection_opened src_ip={} src_port={} dest_ip={} dest_port={}".format(
                     self.client_address[0],
                     self.client_address[1],
@@ -96,24 +97,28 @@ class Handler(SocketServer.StreamRequestHandler):
 
             if not command:    # EOF
                 end_time = time.time()
-                logging.info("action=connection_closed src_ip={} src_port={} dest_ip={} dest_port={} duration={}".format(
+                logging.info("action=connection_closed src_ip={} src_port={} dest_ip={} dest_port={} duration={} totallength={}".format(
                     self.client_address[0],
                     self.client_address[1],
                     self.server.server_address[0],
                     self.server.server_address[1],
-                    (end_time - start_time)))
+                    (end_time - start_time),
+                    bytecount))
                 break
 #            self.wfile.write("your command was: %s" % (command,))
             # Sanitize and log
+            currentlength = len(command)
+            bytescount += currentlength
             command = command.replace("\"", "\\'")
             command = command.replace("\b", "\\b")
             command = command.replace("\n", "\\n")
             command = command.replace("\r", "\\r")
-            logging.info('action=data_in src_ip={} src_port={} dest_ip={} dest_port={} msg="{}"'.format(
+            logging.info('action=data_in src_ip={} src_port={} dest_ip={} dest_port={} length={} msg="{}"'.format(
                     self.client_address[0],
                     self.client_address[1],
                     self.server.server_address[0],
                     self.server.server_address[1],
+                    currentlength,
                     command))
 
 def serve_port(server, args):
