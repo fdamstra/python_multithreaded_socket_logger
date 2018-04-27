@@ -32,7 +32,7 @@
 # Revisions:
 #  2018-04-28 - Initial Revision
 
-import SocketServer
+import socketserver
 import os
 import subprocess
 import sys
@@ -41,7 +41,7 @@ import argparse
 import logging
 import threading
 from threading import Thread
-import thread
+import _thread
 import time
 import pwd
 
@@ -77,11 +77,11 @@ def daemonize(user):
     os.dup2(0, 1)
     os.dup2(0, 2)
 
-class ThreadedTCPServer(SocketServer.ThreadingMixIn, SocketServer.TCPServer):
+class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = True # Faster Binding
     daemon_threads = True # kill all connections on ctrl-c
 
-class Handler(SocketServer.StreamRequestHandler):
+class Handler(socketserver.StreamRequestHandler):
 
     def handle(self):
         start_time = time.time()
@@ -109,6 +109,7 @@ class Handler(SocketServer.StreamRequestHandler):
             # Sanitize and log
             currentlength = len(command)
             bytecount += currentlength
+            command = command.decode("utf-8")
             command = command.replace("\"", "\\'")
             command = command.replace("\b", "\\b")
             command = command.replace("\n", "\\n")
@@ -141,7 +142,7 @@ def main(args):
     parser.add_argument('--runas', metavar="USERNAME", help="Run as this user.")
     args = parser.parse_args()
     if args.debug:
-        print("DEBUG: Start Port: {}".format(args.startport)))
+        print("DEBUG: Start Port: {}".format(args.startport))
         print("DEBUG: End Port: {}".format(args.endport))
         print("DEBUG: IP: {}".format(args.ip))
         print("DEBUG: Protocol: {}".format(args.protocol))

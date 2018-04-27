@@ -9,7 +9,7 @@ INTERFACE=eth1
 IP=$(ifconfig ${INTERFACE} | grep "inet addr" | cut -d: -f2 | awk '{ print $1 }')
 
 mkdir -p /opt/multithreaded_socket_logger/logs/tcp
-python /opt/multithreaded_socket_logger/server.py --ip ${IP} --startport ${START_PORT} --endport ${END_PORT} --logfile /opt/multithreaded_socket_logger/logs/tcp/tcp.log --daemonize --runas nobody
+python3 /opt/multithreaded_socket_logger/server.py --ip ${IP} --startport ${START_PORT} --endport ${END_PORT} --logfile /opt/multithreaded_socket_logger/logs/tcp/tcp.log --daemonize --runas nobody
 
 exit 0
 
