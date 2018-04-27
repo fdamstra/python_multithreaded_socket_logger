@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # A simple example of a threaded TCP server in Python.
 #
 # Copyright (c) 2012 Benoit Sigoure    All rights reserved.
@@ -141,23 +141,23 @@ def main(args):
     parser.add_argument('--runas', metavar="USERNAME", help="Run as this user.")
     args = parser.parse_args()
     if args.debug:
-        print "DEBUG: Start Port: {}".format(args.startport)
-        print "DEBUG: End Port: {}".format(args.endport)
-        print "DEBUG: IP: {}".format(args.ip)
-        print "DEBUG: Protocol: {}".format(args.protocol)
-        print "DEBUG: Logfile: {}".format(args.logfile)
-        print "DEBUG: Daemonize: {}".format(args.daemonize)
+        print("DEBUG: Start Port: {}".format(args.startport)))
+        print("DEBUG: End Port: {}".format(args.endport))
+        print("DEBUG: IP: {}".format(args.ip))
+        print("DEBUG: Protocol: {}".format(args.protocol))
+        print("DEBUG: Logfile: {}".format(args.logfile))
+        print("DEBUG: Daemonize: {}".format(args.daemonize))
 
     if args.startport < 1 or args.startport > 65535:
-        print "ERROR: Invalid start port: {}.".format(args.startport)
+        print("ERROR: Invalid start port: {}.".format(args.startport))
         sys.exit(1)
 
     if args.endport < 1 or args.endport > 65535:
-        print "ERROR: Invalid end port: {}.".format(args.endport)
+        print("ERROR: Invalid end port: {}.".format(args.endport))
         sys.exit(1)
 
     if args.daemonize and (args.logfile == "stdout"):
-        print "ERROR: Cannot daemonize and log to stdout."
+        print("ERROR: Cannot daemonize and log to stdout.")
         sys.exit(1) 
 
     # Set logging
@@ -181,13 +181,13 @@ def main(args):
             except:
                 logging.error("Could not bind to port {} on ip {}".format(p, args.ip))
         else:
-            print "WARNING: UDP Support is untested!"
+            print("WARNING: UDP Support is untested!")
             servers.append(ThreadedUDPServer((args.ip, p), Handler))
         logging.warn("action=started_listening debug={} dest_port={} dest_ip={} protocol={} daemonize={}".format(args.debug, p, args.ip, args.protocol, args.daemonize))
 
     if args.daemonize:
         if args.debug:
-            print "DEBUG: Daemonizing server."
+            print("DEBUG: Daemonizing server.")
         daemonize(args.runas)
     else:
         switch_to_user(args.runas)
