@@ -72,7 +72,7 @@ def daemonize(user):
 
     switch_to_user(user)
  
-    [os.close(i) for i in xrange(3)]
+    [os.close(i) for i in range(3)]
     os.open(os.devnull, os.O_RDWR)
     os.dup2(0, 1)
     os.dup2(0, 2)

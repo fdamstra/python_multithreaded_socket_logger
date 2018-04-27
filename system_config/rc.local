@@ -5,6 +5,9 @@ START_PORT=1
 END_PORT=65535
 INTERFACE=eth1
 
+# Let us open all the things
+ulimit -n 500000
+
 # Get the IP of eth1
 IP=$(ifconfig ${INTERFACE} | grep "inet addr" | cut -d: -f2 | awk '{ print $1 }')
 
