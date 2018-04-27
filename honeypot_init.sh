@@ -13,6 +13,7 @@ echo "up ip route add default via 10.66.0.1 dev eth1 table honeypot" >> /etc/net
 cp /opt/multithreaded_socket_logger/system_config/rc.local /etc/rc.local
 chown root:root /etc/rc.local
 chmod 755 /etc/rc.local
+sudo systemctl enable rc-local
 
 # change user limits for open files
 cp /opt/multithreaded_socket_logger/system_config/limits.conf /etc/security/limits.conf
