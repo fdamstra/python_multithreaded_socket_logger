@@ -143,7 +143,7 @@ def main(args):
         print "DEBUG: Logfile: {}".format(args.logfile)
         print "DEBUG: Daemonize: {}".format(args.daemonize)
 
-    if args.startport < 0 or args.startport > 65535:
+    if args.startport < 1 or args.startport > 65535:
         print "ERROR: Invalid start port: {}.".format(args.startport)
         sys.exit(1)
 
@@ -169,9 +169,12 @@ def main(args):
     logging.warning("action=initializing")
 
     servers = []
-    for p in range(args.startport, args.endport):
+    for p in range(args.startport, args.endport+1):
         if args.protocol == 'tcp':
-            servers.append(ThreadedTCPServer((args.ip, p), Handler))
+            try:
+                servers.append(ThreadedTCPServer((args.ip, p), Handler))
+            except:
+                logging.error("Could not bind to port {} on ip {}".format(p, args.ip))
         else:
             print "WARNING: UDP Support is untested!"
             servers.append(ThreadedUDPServer((args.ip, p), Handler))

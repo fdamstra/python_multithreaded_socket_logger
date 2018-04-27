@@ -14,6 +14,10 @@ cp /opt/multithreaded_socket_logger/system_config/rc.local /etc/rc.local
 chown root:root /etc/rc.local
 chmod 700 /etc/rc.local
 
+# change user limits for open files
+cp /opt/multithreaded_socket_logger/system_config/limits.conf /etc/security/limits.conf
+chown root:root /etc/security/limits.conf
+
 # Disable source verification
 cp /opt/multithreaded_socket_logger/system_config/10-network-security.conf /etc/sysctl.d/10-network-security.conf
 
