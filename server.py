@@ -125,7 +125,7 @@ def serve_port(server, args):
     try:
         server.serve_forever()
     except KeyboardInterrupt:
-        logging.warn("action=stopping=KeyboardInterrupt debug={} startport={} endport={} ip={} protocol={} daemonize={}".format(args.debug, args.startport, args.endport, args.ip, args.protocol, args.daemonize))
+        logging.warn("action=stopping=KeyboardInterrupt debug={} startport={} endport={} dest_ip={} protocol={} daemonize={}".format(args.debug, args.startport, args.endport, args.ip, args.protocol, args.daemonize))
         pass
 
 def main(args):
