@@ -108,7 +108,7 @@ class Handler(SocketServer.StreamRequestHandler):
 #            self.wfile.write("your command was: %s" % (command,))
             # Sanitize and log
             currentlength = len(command)
-            bytescount += currentlength
+            bytecount += currentlength
             command = command.replace("\"", "\\'")
             command = command.replace("\b", "\\b")
             command = command.replace("\n", "\\n")
