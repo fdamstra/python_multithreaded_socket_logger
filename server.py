@@ -40,6 +40,8 @@ import sys
 import argparse
 import logging
 import threading
+from threading import Thread
+import thread
 import time
 import pwd
 
@@ -114,10 +116,18 @@ class Handler(SocketServer.StreamRequestHandler):
                     self.server.server_address[1],
                     command))
 
+def serve_port(server, args):
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        logging.warn("action=stopping=KeyboardInterrupt debug={} startport={} endport={} ip={} protocol={} daemonize={}".format(args.debug, args.startport, args.endport, args.ip, args.protocol, args.daemonize))
+        pass
+
 def main(args):
     # Parse arguments
     parser = argparse.ArgumentParser(description='Listen on a socket and log to logfile.')
-    parser.add_argument('--port', required=True, type=int, help='Specify the port to listen on')
+    parser.add_argument('--startport', required=True, type=int, help='Specify the first port to listen on')
+    parser.add_argument('--endport', required=True, type=int, help='Specify the last port to listen on')
     parser.add_argument('--debug', action="store_true", help="Print debugging information")
     parser.add_argument('--daemonize', action="store_true", help="Run in the background.")
     parser.add_argument('--ip', default='0.0.0.0', help="Specify IP to listen on. Default is 0.0.0.0.")
@@ -126,14 +136,19 @@ def main(args):
     parser.add_argument('--runas', metavar="USERNAME", help="Run as this user.")
     args = parser.parse_args()
     if args.debug:
-        print "DEBUG: Port: {}".format(args.port)
+        print "DEBUG: Start Port: {}".format(args.startport)
+        print "DEBUG: End Port: {}".format(args.endport)
         print "DEBUG: IP: {}".format(args.ip)
         print "DEBUG: Protocol: {}".format(args.protocol)
         print "DEBUG: Logfile: {}".format(args.logfile)
         print "DEBUG: Daemonize: {}".format(args.daemonize)
 
-    if args.port < 1 or args.port > 65535:
-        print "ERROR: Invalid port: {}.".format(args.port)
+    if args.startport < 0 or args.startport > 65535:
+        print "ERROR: Invalid start port: {}.".format(args.startport)
+        sys.exit(1)
+
+    if args.endport < 1 or args.endport > 65535:
+        print "ERROR: Invalid end port: {}.".format(args.endport)
         sys.exit(1)
 
     if args.daemonize and (args.logfile == "stdout"):
@@ -144,19 +159,23 @@ def main(args):
     if(args.logfile == 'stdout'):
         logging.basicConfig(level=logging.DEBUG, 
                 format='%(asctime)s name=%(name)s level=%(levelname)s %(message)s',
-                datefmt='%Y-%m-%d %H:%M:%S.%f %z')
+                datefmt='%Y-%m-%d %H:%M:%S %z')
     else:
         logging.basicConfig(level=logging.DEBUG, 
                 format='%(asctime)s name=%(name)s level=%(levelname)s %(message)s',
-                datefmt='%Y-%m-%d %H:%M:%S.%f %z',
+                datefmt='%Y-%m-%d %H:%M:%S %z',
                 filename=args.logfile,
                 filemode='w')
+    logging.warning("action=initializing")
 
-    if args.protocol == 'tcp':
-        server = ThreadedTCPServer((args.ip, args.port), Handler)
-    else:
-        print "WARNING: UDP Support is untested!"
-        server = ThreadedUDPServer((args.ip, args.port), Handler)
+    servers = []
+    for p in range(args.startport, args.endport):
+        if args.protocol == 'tcp':
+            servers.append(ThreadedTCPServer((args.ip, p), Handler))
+        else:
+            print "WARNING: UDP Support is untested!"
+            servers.append(ThreadedUDPServer((args.ip, p), Handler))
+        logging.warn("action=started_listening debug={} dest_port={} dest_ip={} protocol={} daemonize={}".format(args.debug, p, args.ip, args.protocol, args.daemonize))
 
     if args.daemonize:
         if args.debug:
@@ -165,14 +184,15 @@ def main(args):
     else:
         switch_to_user(args.runas)
 
-    logging.warn("action=started_listening debug={} port={} ip={} protocol={} daemonize={}".format(args.debug, args.port, args.ip, args.protocol, args.daemonize))
+    threads = []
+    for s in servers:
+        t = Thread( target=serve_port, args=(s, args))
+        threads.append(t)
+        t.start()
 
+    for t in threads:
+        t.join()
 
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        logging.warn("action=stopping=KeyboardInterrupt debug={} port={} ip={} protocol={} daemonize={}".format(args.debug, args.port, args.ip, args.protocol, args.daemonize))
-        pass
 
 if __name__ == "__main__":
     sys.exit(main(sys.argv))
