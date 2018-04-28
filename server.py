@@ -44,6 +44,7 @@ from threading import Thread
 import _thread
 import time
 import pwd
+from binascii import b2a_qp
 
 def switch_to_user(user):
     if user:
@@ -109,7 +110,7 @@ class Handler(socketserver.StreamRequestHandler):
             # Sanitize and log
             currentlength = len(command)
             bytecount += currentlength
-            command = command.decode("utf-8")
+            command = b2a_qp(command).decode()
             command = command.replace("\"", "\\'")
             command = command.replace("\b", "\\b")
             command = command.replace("\n", "\\n")
@@ -195,7 +196,7 @@ def main(args):
 
     threads = []
     for s in servers:
-        t = Thread( target=serve_port, args=(s, args))
+        t = Thread( target=serve_port, args=(s, args), daemon=True)
         threads.append(t)
         t.start()
 
