@@ -81,6 +81,7 @@ def daemonize(user):
 class ThreadedTCPServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
     allow_reuse_address = True # Faster Binding
     daemon_threads = True # kill all connections on ctrl-c
+    timeout = 0
 
 class Handler(socketserver.StreamRequestHandler):
 
@@ -194,11 +195,14 @@ def main(args):
     else:
         switch_to_user(args.runas)
 
-    threads = []
-    for s in servers:
-        t = Thread( target=serve_port, args=(s, args), daemon=True)
-        threads.append(t)
-        t.start()
+#    threads = []
+#    for s in servers:
+#        t = Thread( target=serve_port, args=(s, args), daemon=True)
+#        threads.append(t)
+#        t.start()
+    while(True):
+        for s in servers:
+            s.handle_request()
 
     for t in threads:
         t.join()
