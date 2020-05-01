@@ -1,4 +1,4 @@
-#!/bin/sh -e
+#!/bin/bash
 
 # Modify these as you see fit
 START_PORT=1
@@ -9,6 +9,9 @@ INTERFACE=ens6
 # Let us open all the things
 ulimit -n 500000
 ulimit -u 500000
+
+# increase the system PID limit
+sysctl -w kernel.pid_max=4194303
 
 # Get the IP of eth1
 IP=$(ifconfig ${INTERFACE} | grep "inet addr" | cut -d: -f2 | awk '{ print $1 }')
